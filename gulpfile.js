@@ -8,8 +8,6 @@ const relative = require("gulp-relative-sourcemaps-source");
 const ts = require("gulp-typescript");
 const replace = require("gulp-replace");
 const mocha = require("gulp-mocha");
-const del = require("del");
-const sequence = require("run-sequence");
 
 let project = ts.createProject("tsconfig.json");
 
@@ -32,7 +30,7 @@ gulp.task("compile", () => {
 		.pipe(gulp.dest("lib"));
 });
 
-gulp.task("testrun", () => {
+gulp.task("test", () => {
 	return gulp.src([ "src/**/*.ts", "test/**/*.ts", "typings/**/*.d.ts" ])
 		.pipe(ts(project))
 		.pipe(replace("../src/", "./"))
@@ -41,10 +39,6 @@ gulp.task("testrun", () => {
 			reporter: "spec",
 			timeout: 10000
 		}));
-});
-
-gulp.task("test", [ "testrun" ], () => {
-	return del([ "temp/" ]);
 });
 
 gulp.task("default", [ "compile" ]);
