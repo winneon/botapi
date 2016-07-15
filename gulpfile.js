@@ -43,15 +43,8 @@ gulp.task("testrun", () => {
 		}));
 });
 
-gulp.task("testdel", () => {
+gulp.task("test", [ "testrun" ], () => {
 	return del([ "temp/" ]);
-});
-
-gulp.task("test", () => {
-	gulp.removeAllListeners("task_err");
-	sequence("testrun", "testdel", () => {
-		process.exit(0);
-	});
 });
 
 gulp.task("default", [ "compile" ]);
