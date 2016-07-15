@@ -1,12 +1,13 @@
 language: node_js
 node_js:
-- "node"
+- node
 before_script:
 - npm install -g gulp
 script:
 - gulp test
-install:
-- if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi; npm install
+env:
+- CXX=g++-5
+- CC=gcc-5
 addons:
     apt:
         sources:
