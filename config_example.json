@@ -1,0 +1,5 @@
+{
+	"command_prefix": "dj!",
+	"staff_role": "STAFF_ROLE_ID",
+	"token": "BOT_TOKEN"
+}

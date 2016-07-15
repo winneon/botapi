@@ -1,0 +1,6 @@
+{
+	"globalDependencies": {
+		"discord.js": "github:nicholastay/discord.js.d.ts",
+		"node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts"
+	}
+}

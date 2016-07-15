@@ -1,0 +1,38 @@
+{
+  "name": "botapi",
+  "version": "0.0.1",
+  "description": "An extension of discord.js.",
+  "homepage": "https://github.com/winneon/botapi",
+  "bugs": {
+    "url": "https://github.com/winneon/botapi/issues"
+  },
+  "license": "MIT",
+  "author": "Jesse Bryan <winneonsword@gmail.com> (http://winneon.moe/)",
+  "main": "lib/index.js",
+  "typings": "src/index.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/winneon/botapi.git"
+  },
+  "scripts": {
+    "preversion": "git add --all",
+    "version": "git add --all",
+    "postversion": "git push origin master && git push --tags",
+    "gulp": "gulp"
+  },
+  "dependencies": {
+    "console-stamp": "^0.2.2",
+    "discord.js": "github:hydrabolt/discord.js#indev",
+    "source-map-support": "^0.4.1"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.9.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-cli": "^1.2.1",
+    "gulp-relative-sourcemaps-source": "^0.1.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-typescript": "^2.13.6",
+    "gulp-typings": "^2.0.0"
+  }
+}
