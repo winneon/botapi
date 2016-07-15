@@ -33,14 +33,13 @@ gulp.task("compile", () => {
 });
 
 gulp.task("testrun", () => {
-	gulp.removeAllListeners("task_err");
-
 	return gulp.src([ "src/**/*.ts", "test/**/*.ts", "typings/**/*.d.ts" ])
 		.pipe(ts(project))
 		.pipe(replace("../src/", "./"))
 		.pipe(gulp.dest("temp"))
 		.pipe(mocha({
-			reporter: "spec"
+			reporter: "spec",
+			timeout: 10000
 		}));
 });
 
@@ -49,6 +48,7 @@ gulp.task("testdel", () => {
 });
 
 gulp.task("test", () => {
+	gulp.removeAllListeners("task_err");
 	sequence("testrun", "testdel", () => {
 		process.exit(0);
 	});
