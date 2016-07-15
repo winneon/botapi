@@ -1,0 +1,10 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"noResolve": true,
+		"noEmitOnError": true,
+		"noExternalResolve": true,
+		"target": "es6"
+	}
+}
