@@ -4,6 +4,7 @@ node_js:
 before_script:
 - npm install -g gulp
 script:
+- gulp typings
 - gulp test
 env:
 - CXX=g++-5 CC=gcc-5
