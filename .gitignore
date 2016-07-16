@@ -1,5 +1,8 @@
+.coverdata/
 node_modules/
+reports/
 temp/
 typings/
 
+.coverrun
 npm-debug.log

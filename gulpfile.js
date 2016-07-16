@@ -5,9 +5,9 @@ let typings = require("gulp-typings");
 let sourcemaps = require("gulp-sourcemaps");
 let relative = require("gulp-relative-sourcemaps-source");
 let ts = require("gulp-typescript");
+let istanbul = require("gulp-istanbul");
 let replace = require("gulp-replace");
 let mocha = require("gulp-mocha");
-let exit = require("gulp-exit");
 
 let project = ts.createProject("tsconfig.json");
 
@@ -30,16 +30,29 @@ gulp.task("compile", () => {
 		.pipe(gulp.dest("lib"));
 });
 
-gulp.task("test", () => {
-	return gulp.src([ "src/**/*.ts", "test/**/*.ts", "typings/**/*.d.ts" ])
+gulp.task("pretest", [ "compile" ], () => {
+	return gulp.src([ "lib/**/*.js" ])
+		.pipe(sourcemaps.init({
+			loadMaps: true
+		}))
+			.pipe(istanbul())
+			.pipe(istanbul.hookRequire())
+		.pipe(sourcemaps.write());
+});
+
+gulp.task("test", [ "pretest" ], () => {
+	return gulp.src([ "./test/**/*.ts", "./typings/**/*.d.ts" ])
 		.pipe(ts(project))
-		.pipe(replace("../src/", "./"))
+		.pipe(replace("../src/", "../lib/"))
 		.pipe(gulp.dest("temp"))
 		.pipe(mocha({
 			reporter: "spec",
 			timeout: 10000
 		}))
-		.pipe(exit());;
+		.pipe(istanbul.writeReports({
+			dir: "./reports",
+			reporters: [ "json" ]
+		}));
 });
 
 gulp.task("default", [ "compile" ]);

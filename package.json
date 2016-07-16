@@ -26,7 +26,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "gulp": "^3.9.1",
-    "gulp-exit": "0.0.2",
+    "gulp-istanbul": "^1.0.0",
     "gulp-mocha": "^2.2.0",
     "gulp-relative-sourcemaps-source": "^0.1.2",
     "gulp-replace": "^0.5.4",
