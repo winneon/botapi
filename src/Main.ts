@@ -58,6 +58,7 @@ class Main {
 		});
 	}
 
+	/* istanbul ignore next */
 	login(email: string, password: string): Promise<any> {
 		let that = this;
 
