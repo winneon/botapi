@@ -1,13 +1,13 @@
 "use strict";
 
-const gulp = require("gulp");
-const util = require("gulp-util");
-const typings = require("gulp-typings");
-const sourcemaps = require("gulp-sourcemaps");
-const relative = require("gulp-relative-sourcemaps-source");
-const ts = require("gulp-typescript");
-const replace = require("gulp-replace");
-const mocha = require("gulp-mocha");
+let gulp = require("gulp");
+let typings = require("gulp-typings");
+let sourcemaps = require("gulp-sourcemaps");
+let relative = require("gulp-relative-sourcemaps-source");
+let ts = require("gulp-typescript");
+let replace = require("gulp-replace");
+let mocha = require("gulp-mocha");
+let exit = require("gulp-exit");
 
 let project = ts.createProject("tsconfig.json");
 
@@ -38,7 +38,8 @@ gulp.task("test", () => {
 		.pipe(mocha({
 			reporter: "spec",
 			timeout: 10000
-		}));
+		}))
+		.pipe(exit());;
 });
 
 gulp.task("default", [ "compile" ]);

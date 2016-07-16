@@ -30,6 +30,9 @@ describe("Initialization", () => {
 	});
 
 	it("should login", () => {
+		console.log(process.env["BOTAPI_EMAIL"]);
+		console.log(process.env["BOTAPI_PASSWD"]);
+
 		return API.login(process.env["BOTAPI_EMAIL"] || "", process.env["BOTAPI_PASSWD"] || "");
 	});
 });
