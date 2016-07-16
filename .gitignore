@@ -4,5 +4,7 @@ reports/
 temp/
 typings/
 
+lib/test/*
+
 .coverrun
 npm-debug.log

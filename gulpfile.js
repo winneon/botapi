@@ -6,8 +6,9 @@ let sourcemaps = require("gulp-sourcemaps");
 let relative = require("gulp-relative-sourcemaps-source");
 let ts = require("gulp-typescript");
 let istanbul = require("gulp-istanbul");
-let replace = require("gulp-replace");
 let mocha = require("gulp-mocha");
+let exit = require("gulp-exit");
+let remap = require("remap-istanbul/lib/gulpRemapIstanbul");
 
 let project = ts.createProject("tsconfig.json");
 
@@ -17,7 +18,9 @@ gulp.task("typings", () => {
 });
 
 gulp.task("compile", () => {
-	return gulp.src([ "src/**/*.ts", "typings/**/*.d.ts" ])
+	return gulp.src([ "./src/**/*.ts", "./test/**/*.ts", "./typings/**/*.d.ts" ], {
+		base: "."
+	})
 		.pipe(sourcemaps.init())
 			.pipe(ts(project))
 			.pipe(relative({
@@ -31,7 +34,7 @@ gulp.task("compile", () => {
 });
 
 gulp.task("pretest", [ "compile" ], () => {
-	return gulp.src([ "lib/**/*.js" ])
+	return gulp.src([ "lib/**/*.js", "!lib/test/*" ])
 		.pipe(sourcemaps.init({
 			loadMaps: true
 		}))
@@ -40,11 +43,8 @@ gulp.task("pretest", [ "compile" ], () => {
 		.pipe(sourcemaps.write());
 });
 
-gulp.task("test", [ "pretest" ], () => {
-	return gulp.src([ "./test/**/*.ts", "./typings/**/*.d.ts" ])
-		.pipe(ts(project))
-		.pipe(replace("../src/", "../lib/"))
-		.pipe(gulp.dest("temp"))
+gulp.task("dotest", [ "pretest" ], () => {
+	return gulp.src([ "./lib/test/**/*.js" ])
 		.pipe(mocha({
 			reporter: "spec",
 			timeout: 10000
@@ -55,4 +55,15 @@ gulp.task("test", [ "pretest" ], () => {
 		}));
 });
 
+gulp.task("posttest", [ "dotest" ], () => {
+	return gulp.src("reports/coverage-final.json")
+		.pipe(remap({
+			reports: {
+				"json": "reports/coverage-final.json"
+			}
+		}))
+		.pipe(exit());
+});
+
+gulp.task("test", [ "pretest", "dotest", "posttest" ])
 gulp.task("default", [ "compile" ]);
