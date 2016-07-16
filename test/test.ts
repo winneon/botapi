@@ -56,7 +56,7 @@ describe("Initialization", () => {
 	});
 
 	it("should login", () => {
-		return API.login(process.env["BOTAPI_EMAIL"] || "", process.env["BOTAPI_PASSWD"] || "");
+		return API.loginWithToken(process.env["BOTAPI_TOKEN"] || "");
 	});
 });
 
