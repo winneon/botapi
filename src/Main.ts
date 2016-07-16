@@ -58,21 +58,23 @@ class Main {
 		});
 	}
 
-	/* istanbul ignore next */
 	login(email: string, password: string): Promise<any> {
-		let that = this;
+		/* istanbul ignore next */
+		return (function(){
+			let that = this;
 
-		return new Promise<any>((resolve, reject) => {
-			that.client.login(email, password)
-				.then((newToken) => {
-					if (!newToken || newToken.length === 0){
-						reject(new Error("Bad token."));
-					}
+			return new Promise<any>((resolve, reject) => {
+				that.client.login(email, password)
+					.then((newToken) => {
+						if (!newToken || newToken.length === 0){
+							reject(new Error("Bad token."));
+						}
 
-					resolve(newToken);
-				})
-				.catch(error => reject(error));
-		});
+						resolve(newToken);
+					})
+					.catch(error => reject(error));
+			});
+		})();
 	}
 }
 

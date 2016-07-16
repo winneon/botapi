@@ -59,7 +59,8 @@ gulp.task("posttest", [ "dotest" ], () => {
 	return gulp.src("reports/coverage-final.json")
 		.pipe(remap({
 			reports: {
-				"json": "reports/coverage-final.json"
+				"json": "reports/coverage-final.json",
+				"html": "reports/html"
 			}
 		}))
 		.pipe(exit());
