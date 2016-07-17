@@ -8,7 +8,7 @@
   },
   "license": "MIT",
   "author": "Jesse Bryan <winneonsword@gmail.com> (http://winneon.moe/)",
-  "main": "lib/Main.js",
+  "main": "lib/src/Main.js",
   "typings": "src/Main.ts",
   "repository": {
     "type": "git",

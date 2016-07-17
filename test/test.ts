@@ -28,12 +28,12 @@ function triggerCommand(command: string): Promise<any> {
 						} else {
 							times++;
 
-							if (times === 5){
+							if (times === 10){
 								clearInterval(interval);
 								reject(new Error("Timed out."));
 							}
 						}
-					}, 1000);
+					}, 500);
 				});
 		} else {
 			reject(new Error("API isn't initialized."));
