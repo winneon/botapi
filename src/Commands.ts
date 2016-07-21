@@ -55,19 +55,16 @@ class Commands {
 		this._registerListener();
 	}
 
-	register(command: Command, callback?: (error: Error) => void): Promise<any> {
+	register(command: Command): Promise<any> {
 		let commandAliases: string[] = this._checkCommandAliases(command.constructor.name, command.aliases);
 
 		for (let item of this.commands){
-			let itemAliases: string[] = this._checkCommandAliases(item.constructor.name, item.aliases);
+			let itemAliases: string[] = this._checkCommandAliases(item.callback.constructor.name, item.aliases);
 
 			if (itemAliases.some((elem) => {
 				return commandAliases.indexOf(elem) > -1;
 			})){
-				let error: Error = new Error("One of the aliases or command names are already registered.");
-
-				callback(error);
-				return Promise.reject(error);
+				return Promise.reject(new Error("One of the aliases or command names are already registered."));
 			}
 		}
 
@@ -76,7 +73,6 @@ class Commands {
 			callback: command
 		});
 
-		if (callback) callback(undefined);
 		return Promise.resolve();
 	}
 
@@ -106,10 +102,8 @@ class Commands {
 		let commandAliases: string[] = aliases || [ ];
 
 		for (let item in commandAliases){
-			commandAliases[item] = item.toLowerCase();
+			commandAliases[item] = commandAliases[item].toLowerCase();
 		}
-
-		name = name.toLowerCase();
 
 		if (commandAliases.indexOf(name) === -1){
 			commandAliases.push(name);

@@ -28,7 +28,7 @@ class Main {
 		};
 	}
 
-	configure(options): Promise<any> {
+	configure(options: any): Promise<any> {
 		for (let option in options){
 			if (!this.options[option]){
 				return Promise.reject(new Error("The option `" + option + "` does not exist."));
@@ -49,12 +49,16 @@ class Main {
 			that.client.loginWithToken(token)
 				.then((newToken) => {
 					if (!newToken || newToken.length === 0){
+						/* istanbul ignore next */
 						reject(new Error("Bad token."));
 					}
 
 					resolve(newToken);
 				})
-				.catch(error => reject(error));
+				.catch((error) => {
+					/* istanbul ignore next */
+					reject(error)
+				});
 		});
 	}
 
