@@ -11,6 +11,7 @@ let exit = require("gulp-exit");
 let remap = require("remap-istanbul/lib/gulpRemapIstanbul");
 
 let project = ts.createProject("tsconfig.json");
+require("gulp-grunt")(gulp);
 
 gulp.task("typings", () => {
 	return gulp.src("typings.json")
