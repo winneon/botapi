@@ -12,6 +12,7 @@ import Command from "../src/Interfaces/Command";
 import Listener from "../src/Interfaces/Listener";
 
 // Listener and Command Imports
+import Message from "./Message";
 import Ready from "./Ready";
 import TestCommand from "./TestCommand";
 import TestCommandTwo from "./TestCommandTwo";
@@ -19,6 +20,8 @@ import TestCommandTwo from "./TestCommandTwo";
 let API: Main;
 
 let ready: Ready;
+let message: Message;
+
 let testCommand: TestCommand;
 let testCommandTwo: TestCommandTwo;
 
@@ -27,6 +30,10 @@ let server: Server;
 function triggerCommand(command: string, commandObj: Command): Promise<any> {
 	return new Promise<any>((resolve, reject) => {
 		if (API){
+			if (commandObj["test"]){
+				commandObj["test"] = false;
+			}
+
 			API.client.sendMessage(server.channels[0], command)
 				.then((message) => {
 					let times: number = 0;
@@ -83,11 +90,14 @@ function reversePromise(promise: Promise<any>, errorString: string): Promise<any
 
 describe("botAPI suite", () => {
 	describe("Initialization", () => {
-		before("create main object", () => {
+		before("create main object & command objects", () => {
 			API = new Main({
 				autoReconnect: true,
 				rateLimitAsError: true
 			});
+
+			testCommand = new TestCommand();
+			testCommandTwo = new TestCommandTwo();
 		});
 
 		it("should fail to configure", () => {
@@ -101,37 +111,51 @@ describe("botAPI suite", () => {
 				commandPrefix: "!t:"
 			});
 		});
-	});
-
-	describe("Listeners & Logging In", () => {
-		it("should register the ready event", () => {
-			ready = new Ready();
-			return API.listeners.register(ready);
-		});
-
-		it("should fail to register the ready event", () => {
-			return reversePromise(API.listeners.register(ready), "The ready event registered properly.");
-		});
 
 		it("should login", () => {
 			return API.loginWithToken(process.env["BOTAPI_TOKEN"] || "");
 		});
-
-		it("should trigger the ready event", () => {
-			return triggerListener(ready);
-		});
 	});
 
 	describe("Server Tasks", () => {
-		before("create test server & test command", () => {
-			testCommand = new TestCommand();
-			testCommandTwo = new TestCommandTwo();
-
+		it("should create a test server", () => {
 			return API.client.createServer("botapi test server", "us-west")
 				.then(serv => server = serv);
 		});
 
+		describe("Listeners", () => {
+			it("should register the ready event", () => {
+				ready = new Ready();
+				return API.listeners.register(ready);
+			});
+
+			it("should fail to register the ready event", () => {
+				return reversePromise(API.listeners.register(ready), "The ready event registered properly.");
+			});
+
+			it("should register the message event", () => {
+				message = new Message(testCommand);
+				return API.listeners.register(message);
+			});
+
+			it("should fail to register the message event", () => {
+				return reversePromise(API.listeners.register(message), "The message event registered properly.");
+			});
+
+			it("should trigger the ready event", () => {
+				return triggerListener(ready);
+			});
+		});
+
 		describe("Commands", () => {
+			before("create invalid & usage responses", () => {
+				API.commands.setInvalidCommand("You fucking idiot, that's invalid. %invalid%", "%invalid%");
+				API.commands.setInvalidCommand(replacer => "You fucking idiot, that's invalid. %invalid%", "%invalid%");
+
+				API.commands.setUsageCommand("You fucking idiot, do this: %command%", "%command%");
+				API.commands.setUsageCommand(replacer => "You fucking idiot, do this: %command%", "%command%");
+			});
+
 			it("should register a test command", () => {
 				return API.commands.register(testCommand);
 			});
@@ -152,27 +176,13 @@ describe("botAPI suite", () => {
 				return triggerCommand("!t:google query this", testCommand);
 			});
 
-			/*it("should trigger the usage response", () => {
-				return new Promise<any>((resolve, reject) => {
-					API.client.sendMessage(server.channels[0], "!t:testcommand")
-						.then((message) => {
-							let times: number = 0;
+			it("should trigger the invalid response", () => {
+				return triggerCommand("!t:notregisteredcommand", testCommand);
+			});
 
-							let interval: any = setInterval(() => {
-								if (testCommand.test){
-									resolve();
-								} else {
-									times++;
-
-									if (times === 10){
-										clearInterval(interval);
-										reject(new Error("Timed out."));
-									}
-								}
-							}, 500);
-						});
-				});
-			});*/
+			it("should trigger the usage response", () => {
+				return triggerCommand("!t:testcommand", testCommand);
+			});
 		});
 	});
 
