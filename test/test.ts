@@ -8,16 +8,23 @@ import { Server } from "discord.js";
 
 // Local TS Imports
 import Main from "../src/Main";
+import Command from "../src/Interfaces/Command";
+import Listener from "../src/Interfaces/Listener";
+
+// Listener and Command Imports
+import Ready from "./Ready";
 import TestCommand from "./TestCommand";
 import TestCommandTwo from "./TestCommandTwo";
 
 let API: Main;
+
+let ready: Ready;
 let testCommand: TestCommand;
 let testCommandTwo: TestCommandTwo;
 
 let server: Server;
 
-function triggerCommand(command: string): Promise<any> {
+function triggerCommand(command: string, commandObj: Command): Promise<any> {
 	return new Promise<any>((resolve, reject) => {
 		if (API){
 			API.client.sendMessage(server.channels[0], command)
@@ -25,7 +32,7 @@ function triggerCommand(command: string): Promise<any> {
 					let times: number = 0;
 
 					let interval: any = setInterval(() => {
-						if (testCommand.test){
+						if (commandObj["test"]){
 							resolve();
 						} else {
 							times++;
@@ -37,6 +44,29 @@ function triggerCommand(command: string): Promise<any> {
 						}
 					}, 500);
 				});
+		} else {
+			reject(new Error("API isn't initialized."));
+		}
+	});
+}
+
+function triggerListener(listener: Listener): Promise<any> {
+	return new Promise<any>((resolve, reject) => {
+		if (API){
+			let times: number = 0;
+
+			let interval: any = setInterval(() => {
+				if (listener["test"]){
+					resolve();
+				} else {
+					times++;
+
+					if (times === 10){
+						clearInterval(interval);
+						reject(new Error("Timed out."));
+					}
+				}
+			}, 500);
 		} else {
 			reject(new Error("API isn't initialized."));
 		}
@@ -71,9 +101,20 @@ describe("botAPI suite", () => {
 				commandPrefix: "!t:"
 			});
 		});
+	});
+
+	describe("Listeners & Logging In", () => {
+		it("should register the ready event", () => {
+			ready = new Ready();
+			return API.listeners.register(ready);
+		});
 
 		it("should login", () => {
 			return API.loginWithToken(process.env["BOTAPI_TOKEN"] || "");
+		});
+
+		it("should trigger the ready event", () => {
+			return triggerListener(ready);
 		});
 	});
 
@@ -100,11 +141,11 @@ describe("botAPI suite", () => {
 			});
 
 			it("should trigger the test command", () => {
-				return triggerCommand("!t:testcommand query this");
+				return triggerCommand("!t:testcommand query this", testCommand);
 			});
 
 			it("should trigger the test command with an alternate alias", () => {
-				return triggerCommand("!t:google query this");
+				return triggerCommand("!t:google query this", testCommand);
 			});
 
 			/*it("should trigger the usage response", () => {

@@ -8,24 +8,29 @@ import * as discord from "discord.js";
 
 // Local TS Imports
 import Commands from "./Commands";
+import Listeners from "./Listeners";
 
 class Main {
-	discord: any;
-	client: discord.Client;
-	commands: Commands;
-
 	options: {
 		commandPrefix: string
 	};
+	
+	discord: any;
+	client: discord.Client;
+
+	commands: Commands;
+	listeners: Listeners;
 
 	constructor(options?: any){
-		this.discord = discord;
-		this.client = new discord.Client(options);
-		this.commands = new Commands(this);
-
 		this.options = {
 			commandPrefix: "!"
 		};
+
+		this.discord = options.Client ? options : discord;
+		this.client = new discord.Client(options);
+
+		this.commands = new Commands(this);
+		this.listeners = new Listeners(this);
 	}
 
 	configure(options: any): Promise<any> {

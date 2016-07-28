@@ -1,7 +1,7 @@
 "use strict";
 
 // External TS Imports
-import { Message } from "discord.js";
+import { Client, Message } from "discord.js";
 
 // Local TS Imports
 import Commands from "../Commands";
@@ -14,7 +14,7 @@ interface Command {
 	aliases?: string[];
 	requiredRole?: string;
 
-	onCommand(commands: Commands, message: Message, args: string[]): void;
+	onCommand(commands: Commands, client: Client, message: Message, args: string[]): void;
 }
 
 export default Command;
