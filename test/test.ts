@@ -109,6 +109,10 @@ describe("botAPI suite", () => {
 			return API.listeners.register(ready);
 		});
 
+		it("should fail to register the ready event", () => {
+			return reversePromise(API.listeners.register(ready), "The ready event registered properly.");
+		});
+
 		it("should login", () => {
 			return API.loginWithToken(process.env["BOTAPI_TOKEN"] || "");
 		});
