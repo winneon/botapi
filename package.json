@@ -9,7 +9,7 @@
   "license": "MIT",
   "author": "Jesse Bryan <winneonsword@gmail.com> (http://winneon.moe/)",
   "main": "lib/src/Main.js",
-  "typings": "src/Main.ts",
+  "typings": "lib/src/Main.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/winneon/botapi.git"
@@ -36,6 +36,7 @@
     "gulp-relative-sourcemaps-source": "^0.1.2",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-typescript": "^2.13.6",
-    "gulp-typings": "^2.0.0"
+    "gulp-typings": "^2.0.0",
+    "merge2": "^1.0.2"
   }
 }

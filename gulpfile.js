@@ -5,6 +5,7 @@ let typings = require("gulp-typings");
 let sourcemaps = require("gulp-sourcemaps");
 let relative = require("gulp-relative-sourcemaps-source");
 let ts = require("gulp-typescript");
+let merge = require("merge2");
 let istanbul = require("gulp-istanbul");
 let mocha = require("gulp-mocha");
 let exit = require("gulp-exit");
@@ -19,19 +20,23 @@ gulp.task("typings", () => {
 });
 
 gulp.task("compile", () => {
-	return gulp.src([ "./src/**/*.ts", "./test/**/*.ts", "./typings/**/*.d.ts" ], {
+	let dest = "lib";
+
+	let result = gulp.src([ "./src/**/*.ts", "./test/**/*.ts", "./typings/**/*.d.ts" ], {
 		base: "."
-	})
-		.pipe(sourcemaps.init())
-			.pipe(ts(project))
-			.pipe(relative({
-				dest: "lib"
-			}))
+	}).pipe(sourcemaps.init()).pipe(ts(project));
+
+	return merge([
+		result.js.pipe(relative({
+			dest: "lib"
+		}))
 		.pipe(sourcemaps.write(".", {
 			includeContent: false,
 			sourceRoot: "."
 		}))
-		.pipe(gulp.dest("lib"));
+		.pipe(gulp.dest(dest)),
+		result.dts.pipe(gulp.dest(dest))
+	]);
 });
 
 gulp.task("pretest", [ "compile" ], () => {
